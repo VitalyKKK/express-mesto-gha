@@ -1,0 +1,29 @@
+{
+  "name": "express-mesto-gha",
+  "version": "1.0.0",
+  "description": "Проект Mesto фронтенд + бэкенд",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "lint": "npx eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VitalyKKK/express-mesto-gha.git"
+  },
+  "keywords": [],
+  "author": "VitalyKKK",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VitalyKKK/express-mesto-gha/issues"
+  },
+  "homepage": "https://github.com/VitalyKKK/express-mesto-gha#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
