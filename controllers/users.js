@@ -1,11 +1,12 @@
 const User = require('../models/user');
 const handleError = require('../utils/handleErrors');
 const NotFoundError = require('../utils/notFoundError');
+const { CREATED_201 } = require('../utils/constants');
 
 const createUsers = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => res.status(201).send(user))
+    .then((user) => res.status(CREATED_201).send(user))
     .catch((error) => {
       handleError(error, res);
     });
