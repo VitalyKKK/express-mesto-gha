@@ -45,9 +45,9 @@ const updateProfileUser = (req, res) => {
     },
   )
     .then((user) => res.send(user))
-    .catch(() => res.status(500).send({
-      message: 'Ошибка',
-    }));
+    .catch((error) => {
+      handleError(error, res);
+    });
 };
 
 const updateAvatarUser = (req, res) => {
@@ -62,9 +62,9 @@ const updateAvatarUser = (req, res) => {
     },
   )
     .then((user) => res.send(user))
-    .catch(() => res.status(500).send({
-      message: 'Ошибка',
-    }));
+    .catch((error) => {
+      handleError(error, res);
+    });
 };
 
 module.exports = {
