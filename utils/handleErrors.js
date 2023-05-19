@@ -1,6 +1,7 @@
 const mongooseError = require('mongoose').Error;
-const NotFoundError = require('./notFoundError');
+const NotFoundError = require('./errors/notFoundError');
 const { BAD_REQUEST_400, INTERNAL_SERVER_ERROR_500 } = require('./constants');
+const UnauthorizedError = require('./errors/UnauthorizedError');
 
 function handleError(error, res) {
   if (
@@ -8,6 +9,10 @@ function handleError(error, res) {
     || error instanceof mongooseError.CastError
   ) {
     res.status(BAD_REQUEST_400).send({ message: error.message });
+    return;
+  }
+  if (error instanceof UnauthorizedError) {
+    res.status(error.statusCode).send({ message: error.message });
     return;
   }
   if (error instanceof NotFoundError) {

@@ -1,11 +1,26 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const handleError = require('../utils/handleErrors');
-const NotFoundError = require('../utils/notFoundError');
+const NotFoundError = require('../utils/errors/notFoundError');
 const { CREATED_201 } = require('../utils/constants');
 
-const createUsers = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
+const createUsers = async (req, res) => {
+  const {
+    name,
+    about,
+    avatar,
+    email,
+    password,
+  } = req.body;
+  const hash = await bcrypt.hash(password, 10);
+  User.create({
+    name,
+    about,
+    avatar,
+    email,
+    password: hash,
+  })
     .then((user) => res.status(CREATED_201).send(user))
     .catch((error) => {
       handleError(error, res);
@@ -68,10 +83,25 @@ const updateAvatarUser = (req, res) => {
     });
 };
 
+const login = (req, res) => {
+  const { email, password } = req.body;
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', {
+        expiresIn: '7d',
+      });
+      res.send({ token });
+    })
+    .catch((error) => {
+      handleError(error, res);
+    });
+};
+
 module.exports = {
   createUsers,
   getUsers,
   getUserById,
   updateAvatarUser,
   updateProfileUser,
+  login,
 };

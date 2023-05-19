@@ -1,6 +1,6 @@
 const Card = require('../models/card');
 const handleError = require('../utils/handleErrors');
-const NotFoundError = require('../utils/notFoundError');
+const NotFoundError = require('../utils/errors/notFoundError');
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
