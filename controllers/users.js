@@ -5,6 +5,20 @@ const handleError = require('../utils/handleErrors');
 const NotFoundError = require('../utils/errors/notFoundError');
 const { CREATED_201 } = require('../utils/constants');
 
+const getMe = (req, res) => {
+  const { _id } = req.user;
+  User.findById(_id)
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Такого пользователя не существует');
+      }
+      res.send(user);
+    })
+    .catch((error) => {
+      handleError(error, res);
+    });
+};
+
 const createUsers = async (req, res) => {
   const {
     name,
@@ -98,6 +112,7 @@ const login = (req, res) => {
 };
 
 module.exports = {
+  getMe,
   createUsers,
   getUsers,
   getUserById,
