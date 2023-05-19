@@ -1,29 +1,24 @@
 const Card = require('../models/card');
-const handleError = require('../utils/handleErrors');
 const NotFoundError = require('../utils/errors/notFoundError');
 const ForbiddenError = require('../utils/errors/ForbiddenError');
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
     .then((card) => card.populate('owner'))
     .then((card) => res.send(card))
-    .catch((error) => {
-      handleError(error, res);
-    });
+    .catch(next);
 };
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .populate(['owner', 'likes'])
     .then((cards) => res.send(cards))
-    .catch((error) => {
-      handleError(error, res);
-    });
+    .catch(next);
 };
 
-const deleteCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   const { id } = req.params;
   Card.findById(id)
     .then((card) => {
@@ -40,12 +35,10 @@ const deleteCard = (req, res) => {
       card.deleteOne();
       res.send({ message: 'Карточка удалена' });
     })
-    .catch((error) => {
-      handleError(error, res);
-    });
+    .catch(next);
 };
 
-const likeCard = (req, res) => {
+const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.id,
     { $addToSet: { likes: req.user._id } },
@@ -58,12 +51,10 @@ const likeCard = (req, res) => {
       }
       res.send(card);
     })
-    .catch((error) => {
-      handleError(error, res);
-    });
+    .catch(next);
 };
 
-const dislikeCard = (req, res) => {
+const dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.id,
     { $pull: { likes: req.user._id } },
@@ -76,9 +67,7 @@ const dislikeCard = (req, res) => {
       }
       res.send(card);
     })
-    .catch((error) => {
-      handleError(error, res);
-    });
+    .catch(next);
 };
 
 module.exports = {
