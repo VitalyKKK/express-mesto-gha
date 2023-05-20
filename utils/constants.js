@@ -10,6 +10,8 @@ const {
   HTTP_STATUS_CONFLICT: CONFLICT_409,
 } = http2.constants;
 
+const regExLink = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=]*)?$/im;
+
 module.exports = {
   NOT_FOUND_404,
   BAD_REQUEST_400,
@@ -18,4 +20,5 @@ module.exports = {
   UNAUTHORIZED_401,
   FORBIDDEN_403,
   CONFLICT_409,
+  regExLink,
 };
