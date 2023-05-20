@@ -2,6 +2,7 @@ const mongooseError = require('mongoose').Error;
 const NotFoundError = require('./errors/notFoundError');
 const { BAD_REQUEST_400, INTERNAL_SERVER_ERROR_500, CONFLICT_409 } = require('./constants');
 const UnauthorizedError = require('./errors/UnauthorizedError');
+const ForbiddenError = require('./errors/ForbiddenError');
 
 function handleError(error, req, res, next) {
   if (
@@ -12,6 +13,10 @@ function handleError(error, req, res, next) {
     return;
   }
   if (error instanceof UnauthorizedError) {
+    res.status(error.statusCode).send({ message: error.message });
+    return;
+  }
+  if (error instanceof ForbiddenError) {
     res.status(error.statusCode).send({ message: error.message });
     return;
   }
