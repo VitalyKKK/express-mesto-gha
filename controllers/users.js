@@ -1,7 +1,12 @@
+const mongoose = require('mongoose');
+
+const { ValidationError } = mongoose.Error;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../utils/errors/notFoundError');
+const ConflictError = require('../utils/errors/ConflictError');
+const BadRequestError = require('../utils/errors/BadRequestError');
 const { CREATED_201 } = require('../utils/constants');
 
 const getMe = (req, res, next) => {
@@ -33,7 +38,15 @@ const createUsers = async (req, res, next) => {
     password: hash,
   })
     .then((user) => res.status(CREATED_201).send(user))
-    .catch(next);
+    .catch((err) => {
+      if (err.code === 11000) {
+        next(new ConflictError('Указанный email уже зарегистрирован'));
+      } else if (err instanceof ValidationError) {
+        next(new BadRequestError('Данные для создания пользователя некорректны'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const getUsers = (req, res, next) => {

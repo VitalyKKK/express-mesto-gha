@@ -1,6 +1,10 @@
+const mongoose = require('mongoose');
+
+const { ValidationError } = mongoose.Error;
 const Card = require('../models/card');
 const NotFoundError = require('../utils/errors/notFoundError');
 const ForbiddenError = require('../utils/errors/ForbiddenError');
+const BadRequestError = require('../utils/errors/BadRequestError');
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
@@ -8,7 +12,13 @@ const createCard = (req, res, next) => {
   Card.create({ name, link, owner: req.user._id })
     .then((card) => card.populate('owner'))
     .then((card) => res.send(card))
-    .catch(next);
+    .catch((err) => {
+      if (err instanceof ValidationError) {
+        next(new BadRequestError('Данные для создания карточки некорректны'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const getCards = (req, res, next) => {
